@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Request
+from app.core.rate_limiter import limiter
 
 router = APIRouter(
     prefix="",
@@ -6,9 +7,11 @@ router = APIRouter(
 )
 
 @router.get("/")
-async def root():
+@limiter.limit("60/minute")
+async def root(request: Request):
     return {"message": "ClinicCare Backend is Running"}
 
 @router.get("/health")
-async def health_check():
+@limiter.limit("60/minute")
+async def health_check(request: Request):
     return {"status": "ok"}
