@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 from slowapi import _rate_limit_exceeded_handler
@@ -10,6 +10,7 @@ from app.core.rate_limiter import limiter
 
 # routers
 from app.core.router import router as root_router
+from app.modules.user.router import router as user_router
 
 app = FastAPI(title="ClinicCare Mini EMR")
 app.state.limiter = limiter
@@ -33,3 +34,4 @@ app.add_middleware(
 
 # include routers
 app.include_router(root_router)
+app.include_router(user_router, prefix="/api/v1")
