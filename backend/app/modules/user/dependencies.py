@@ -9,11 +9,12 @@ from sqlmodel import select
 
 from app.core.config import settings
 from app.core.database import AsyncSessionDep
-from app.core.security import ALGORITHM
+from app.core.security import ALGORITHM, is_token_blacklisted
 from app.modules.user.models import User, Role
-from app.modules.user.exceptions import InactiveUserException, CredentialException, UnauthorizedException
+from app.modules.user.exceptions import InactiveUserException
+from app.modules.auth.exceptions import CredentialException, UnauthorizedException
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/auth/login")
 
 async def get_current_user(
     token: Annotated[str, Depends(oauth2_scheme)],
@@ -27,6 +28,9 @@ async def get_current_user(
     except InvalidTokenError:
         raise CredentialException()
     except ValidationError:
+        raise CredentialException()
+        
+    if is_token_blacklisted(token):
         raise CredentialException()
         
     result = await db.execute(select(User).where(User.email == username))  # type: ignore[deprecated]

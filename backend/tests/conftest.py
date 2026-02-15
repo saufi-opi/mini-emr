@@ -11,8 +11,14 @@ from sqlmodel import SQLModel
 from app.main import app
 from app.core.database import get_db
 from app.core.security import create_access_token, get_password_hash
+from app.core.redis import redis_client
+from app.core.config import settings, AppEnv
 from app.modules.user.models import User, Role
 from app.modules.user.schemas import UserCreate
+
+# Override settings for testing
+settings.APP_ENV = AppEnv.TEST
+settings.SESSION_COOKIE_SECURE = False
 
 # Test database URL (in-memory SQLite)
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -39,6 +45,11 @@ async def async_session() -> AsyncGenerator[AsyncSession, None]:
     
     async with test_engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.drop_all)
+
+@pytest_asyncio.fixture(autouse=True)
+def flush_redis():
+    """Flush Redis before each test to clear rate limits and blacklists."""
+    redis_client.flushdb()
 
 @pytest_asyncio.fixture(scope="function")
 async def client(async_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:

@@ -1,6 +1,6 @@
 from pydantic import computed_field, PostgresDsn, RedisDsn
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from typing import List
+from typing import List, Literal
 from enum import Enum
 
 class AppEnv(str, Enum):
@@ -64,6 +64,8 @@ class Settings(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_ACCESS_TOKEN_EXPIRE_MINUTES: int = 15
     JWT_REFRESH_TOKEN_EXPIRE_DAYS: int = 7
+    SESSION_COOKIE_SECURE: bool = True
+    SESSION_COOKIE_SAMESITE: Literal["lax", "strict", "none"] = "lax"
     
     # CORS
     CORS_ORIGINS: str = "http://localhost:5173"
