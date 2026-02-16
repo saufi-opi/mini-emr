@@ -17,6 +17,7 @@ class ConsultationDiagnosis(SQLModel, table=True):
 class ConsultationBase(SQLModel):
     patient_full_name: str = Field(max_length=255)
     doctor_id: Optional[uuid.UUID] = Field(default=None, foreign_key="user.id")
+    consultation_date: datetime = Field(index=True)
     notes: str = Field(default="")
 
 class Consultation(ConsultationBase, table=True):
@@ -27,3 +28,13 @@ class Consultation(ConsultationBase, table=True):
     diagnoses: List["Diagnosis"] = Relationship(
         link_model=ConsultationDiagnosis
     )
+
+    @property
+    def doctor_name(self) -> str:
+        if self.doctor:
+            return self.doctor.full_name or self.doctor.email
+        return "Unknown"
+
+    @property
+    def diagnosis_count(self) -> int:
+        return len(self.diagnoses) if self.diagnoses is not None else 0

@@ -83,7 +83,7 @@ export class ConsultationService {
      * @param data.limit Maximum records to return
      * @param data.sort Sort field. Prefix with - for descending (e.g., '-created_at')
      * @param data.search Search query for text fields
-     * @returns QueryResult_ConsultationRead_ Successful Response
+     * @returns QueryResult_ConsultationList_ Successful Response
      * @throws ApiError
      */
     public static listConsultations(data: ConsultationListConsultationsData = {}): CancelablePromise<ConsultationListConsultationsResponse> {

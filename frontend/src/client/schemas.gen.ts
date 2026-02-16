@@ -19,6 +19,11 @@ export const ConsultationCreateSchema = {
             ],
             title: 'Doctor Id'
         },
+        consultation_date: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Consultation Date'
+        },
         notes: {
             type: 'string',
             title: 'Notes',
@@ -35,8 +40,43 @@ export const ConsultationCreateSchema = {
         }
     },
     type: 'object',
-    required: ['patient_full_name'],
+    required: ['patient_full_name', 'consultation_date'],
     title: 'ConsultationCreate'
+} as const;
+
+export const ConsultationListSchema = {
+    properties: {
+        id: {
+            type: 'string',
+            format: 'uuid',
+            title: 'Id'
+        },
+        patient_full_name: {
+            type: 'string',
+            title: 'Patient Full Name'
+        },
+        doctor_name: {
+            type: 'string',
+            title: 'Doctor Name'
+        },
+        consultation_date: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Consultation Date'
+        },
+        created_at: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Created At'
+        },
+        diagnosis_count: {
+            type: 'integer',
+            title: 'Diagnosis Count'
+        }
+    },
+    type: 'object',
+    required: ['id', 'patient_full_name', 'doctor_name', 'consultation_date', 'created_at', 'diagnosis_count'],
+    title: 'ConsultationList'
 } as const;
 
 export const ConsultationReadSchema = {
@@ -58,6 +98,11 @@ export const ConsultationReadSchema = {
             ],
             title: 'Doctor Id'
         },
+        consultation_date: {
+            type: 'string',
+            format: 'date-time',
+            title: 'Consultation Date'
+        },
         notes: {
             type: 'string',
             title: 'Notes',
@@ -73,6 +118,17 @@ export const ConsultationReadSchema = {
             format: 'date-time',
             title: 'Created At'
         },
+        doctor_name: {
+            anyOf: [
+                {
+                    type: 'string'
+                },
+                {
+                    type: 'null'
+                }
+            ],
+            title: 'Doctor Name'
+        },
         diagnoses: {
             items: {
                 '$ref': '#/components/schemas/DiagnosisRead'
@@ -82,7 +138,7 @@ export const ConsultationReadSchema = {
         }
     },
     type: 'object',
-    required: ['patient_full_name', 'id', 'created_at', 'diagnoses'],
+    required: ['patient_full_name', 'consultation_date', 'id', 'created_at', 'diagnoses'],
     title: 'ConsultationRead'
 } as const;
 
@@ -145,11 +201,11 @@ export const LoginRequestSchema = {
     title: 'LoginRequest'
 } as const;
 
-export const QueryResult_ConsultationRead_Schema = {
+export const QueryResult_ConsultationList_Schema = {
     properties: {
         data: {
             items: {
-                '$ref': '#/components/schemas/ConsultationRead'
+                '$ref': '#/components/schemas/ConsultationList'
             },
             type: 'array',
             title: 'Data'
@@ -161,7 +217,7 @@ export const QueryResult_ConsultationRead_Schema = {
     },
     type: 'object',
     required: ['data', 'count'],
-    title: 'QueryResult[ConsultationRead]'
+    title: 'QueryResult[ConsultationList]'
 } as const;
 
 export const QueryResult_DiagnosisRead_Schema = {

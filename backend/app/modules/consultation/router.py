@@ -3,7 +3,7 @@ from typing import List
 from fastapi import APIRouter, Depends, HTTPException, status, Request
 from app.core.database import AsyncSessionDep
 from app.modules.consultation import service
-from app.modules.consultation.schemas import ConsultationCreate, ConsultationRead
+from app.modules.consultation.schemas import ConsultationCreate, ConsultationRead, ConsultationList
 from app.modules.user.models import User, Role
 from app.modules.user.dependencies import get_current_active_user
 from app.core.schemas import PaginationParams, SortParams, SearchParams
@@ -23,13 +23,19 @@ async def create_consultation(
     """
     Create a new consultation record.
     """
+    doctor_id = current_user.id
+    
+    # Simple RBAC: Only Admin can override doctor_id
+    if current_user.role == Role.ADMIN and consultation_in.doctor_id:
+        doctor_id = consultation_in.doctor_id
+
     return await service.create_consultation(
         session=session, 
         consultation_in=consultation_in, 
-        doctor_id=current_user.id
+        doctor_id=doctor_id
     )
 
-@router.get("/", response_model=QueryResult[ConsultationRead])
+@router.get("/", response_model=QueryResult[ConsultationList])
 @limiter.limit("60/minute")
 async def list_consultations(
     request: Request,

@@ -3,16 +3,29 @@
 export type ConsultationCreate = {
     patient_full_name: string;
     doctor_id?: (string | null);
+    consultation_date: string;
     notes?: string;
     diagnosis_ids?: Array<(string)>;
+};
+
+export type ConsultationList = {
+    id: string;
+    patient_full_name: string;
+    doctor_name: string;
+    consultation_date: string;
+    created_at: string;
+    diagnosis_count: number;
+    diagnoses: Array<DiagnosisRead>;
 };
 
 export type ConsultationRead = {
     patient_full_name: string;
     doctor_id?: (string | null);
+    consultation_date: string;
     notes?: string;
     id: string;
     created_at: string;
+    doctor_name?: (string | null);
     diagnoses: Array<DiagnosisRead>;
 };
 
@@ -32,8 +45,8 @@ export type LoginRequest = {
     password: string;
 };
 
-export type QueryResult_ConsultationRead_ = {
-    data: Array<ConsultationRead>;
+export type QueryResult_ConsultationList_ = {
+    data: Array<ConsultationList>;
     count: number;
 };
 
@@ -116,7 +129,7 @@ export type ConsultationListConsultationsData = {
     sort?: string;
 };
 
-export type ConsultationListConsultationsResponse = (QueryResult_ConsultationRead_);
+export type ConsultationListConsultationsResponse = (QueryResult_ConsultationList_);
 
 export type ConsultationGetConsultationData = {
     consultationId: string;

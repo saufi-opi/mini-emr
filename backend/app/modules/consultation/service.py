@@ -29,6 +29,7 @@ async def create_consultation(*,
     db_consultation = Consultation(
         patient_full_name=consultation_in.patient_full_name,
         doctor_id=doctor_id,
+        consultation_date=consultation_in.consultation_date,
         notes=consultation_in.notes
     )
     
@@ -76,6 +77,7 @@ async def get_consultations(*,
     # Sorting config
     sort_config = {
         "patient_name": Consultation.patient_full_name,
+        "consultation_date": Consultation.consultation_date,
         "created_at": Consultation.created_at
     }
     builder.sort(sort, sort_config)

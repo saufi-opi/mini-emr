@@ -3,6 +3,7 @@ import AppSidebar from '@/components/global/AppSidebar.vue'
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { Separator } from '@/components/ui/separator'
 import ThemeToggle from '@/components/global/ThemeToggle.vue';
+import UserNav from '@/components/global/UserNav.vue';
 </script>
 
 <template>
@@ -16,6 +17,7 @@ import ThemeToggle from '@/components/global/ThemeToggle.vue';
         </div>
         <div class="flex items-center gap-2 px-4">
           <ThemeToggle/>
+          <UserNav />
         </div>
       </header>
       <main class="flex flex-1 flex-col gap-4 p-4 pt-0">
