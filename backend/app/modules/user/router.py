@@ -40,7 +40,7 @@ async def read_users(
         session=session,
         pagination=pagination,
         sort=sort,
-        search=search.search,
+        search=search,
     )
 
 

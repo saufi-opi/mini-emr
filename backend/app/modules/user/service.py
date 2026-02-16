@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlmodel import select
 from app.core.schemas import SortDirection
 from app.core.query_builder import QueryBuilder, QueryResult
-from app.core.schemas import PaginationParams, SortParams
+from app.core.schemas import PaginationParams, SortParams, SearchParams
 
 async def get_user_by_id(*, session: AsyncSession, user_id: uuid.UUID) -> User | None:
     statement = select(User).where(User.id == user_id)
@@ -27,7 +27,7 @@ async def get_all_users(*,
     session: AsyncSession, 
     pagination: PaginationParams, 
     sort: SortParams,
-    search: str | None = None
+    search: SearchParams
 ) -> QueryResult[User]:
     query = QueryBuilder(User, session)
     query.paginate(pagination).sort(sort).search(search, [User.full_name])

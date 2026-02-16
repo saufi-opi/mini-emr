@@ -6,7 +6,7 @@ from sqlmodel import SQLModel
 from typing_extensions import Self
 from pydantic import BaseModel
 
-from app.core.schemas import PaginationParams, SortParams
+from app.core.schemas import PaginationParams, SortParams, SearchParams
 
 
 # Query builder
@@ -115,11 +115,11 @@ class QueryBuilder(Generic[T]):
             self._query = self._query.where(condition)
         return self
 
-    def search(self, term: str | None, columns: list[Any]) -> Self:
+    def search(self, search: SearchParams | None, columns: list[Any]) -> Self:
         """Add search across multiple columns using ILIKE."""
 
-        if term:
-            search_term = f"%{term}%"
+        if search and search.search:
+            search_term = f"%{search.search}%"
             conditions = [col(column).ilike(search_term) for column in columns]
             self._query = self._query.where(or_(*conditions))
         return self

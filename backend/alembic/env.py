@@ -34,6 +34,7 @@ config.set_main_option("sqlalchemy.url", str(settings.SQLALCHEMY_DATABASE_URI))
 # target_metadata = mymodel.Base.metadata
 target_metadata = SQLModel.metadata
 from app.modules.user.models import User
+from app.modules.diagnoses.models import Diagnosis
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
