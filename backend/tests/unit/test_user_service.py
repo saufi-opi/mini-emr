@@ -6,7 +6,7 @@ from app.modules.user import service as user_service
 from app.modules.user.models import User, Role
 from app.modules.user.schemas import UserCreate, UserUpdate
 from app.modules.user.exceptions import UserAlreadyExistsException
-from app.core.schemas import PaginationParams, SortParams
+from app.core.schemas import PaginationParams, SortParams, SearchParams
 from app.core.security import verify_password
 
 
@@ -139,11 +139,13 @@ async def test_get_all_users_pagination(async_session: AsyncSession, admin_user:
     # Test first page
     pagination = PaginationParams(skip=0, limit=3)
     sort = SortParams(sort="email")
+    search = SearchParams(search="")
     
     result = await user_service.get_all_users(
         session=async_session,
         pagination=pagination,
-        sort=sort
+        sort=sort,
+        search=search
     )
     
     assert len(result.data) == 3
@@ -154,7 +156,8 @@ async def test_get_all_users_pagination(async_session: AsyncSession, admin_user:
     result = await user_service.get_all_users(
         session=async_session,
         pagination=pagination,
-        sort=sort
+        sort=sort,
+        search=search
     )
     
     assert len(result.data) == 3
@@ -185,11 +188,13 @@ async def test_get_all_users_sorting(async_session: AsyncSession):
     # Test ascending sort
     pagination = PaginationParams(skip=0, limit=10)
     sort = SortParams(sort="full_name")
+    search = SearchParams(search="")
     
     result = await user_service.get_all_users(
         session=async_session,
         pagination=pagination,
-        sort=sort
+        sort=sort,
+        search=search
     )
     
     assert result.data[0].full_name == "Alice"
@@ -202,7 +207,8 @@ async def test_get_all_users_sorting(async_session: AsyncSession):
     result = await user_service.get_all_users(
         session=async_session,
         pagination=pagination,
-        sort=sort
+        sort=sort,
+        search=search
     )
     
     assert result.data[0].full_name == "Charlie"
@@ -235,22 +241,24 @@ async def test_get_all_users_search(async_session: AsyncSession):
     sort = SortParams(sort="full_name")
     
     # Search for "John" - should match "John Smith" and "Johnny Walker"
+    search = SearchParams(search="John")
     result = await user_service.get_all_users(
         session=async_session,
         pagination=pagination,
         sort=sort,
-        search="John"
+        search=search
     )
     
     assert result.count == 2
     assert all("John" in user.full_name if user.full_name else False for user in result.data)
     
     # Search for "Doe" - should match only "Jane Doe"
+    search = SearchParams(search="Doe")
     result = await user_service.get_all_users(
         session=async_session,
         pagination=pagination,
         sort=sort,
-        search="Doe"
+        search=search
     )
     
     assert result.count == 1

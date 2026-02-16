@@ -10,7 +10,7 @@ from app.modules.user.dependencies import get_current_active_user
 router = APIRouter(prefix="/diagnosis", tags=["diagnosis"])
 
 @router.get("/", 
-    # dependencies=[Depends(get_current_active_user)], 
+    dependencies=[Depends(get_current_active_user)],
     response_model=QueryResult[DiagnosisRead]
 )
 @limiter.limit("60/minute")
