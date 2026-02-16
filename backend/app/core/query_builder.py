@@ -1,4 +1,4 @@
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.core.schemas import SortDirection
 from typing import Any, Generic, TypeVar
 from sqlmodel import asc, desc, func, select, col, or_
@@ -115,6 +115,16 @@ class QueryBuilder(Generic[T]):
             self._query = self._query.where(condition)
         return self
 
+    def join(self, target: Any, onclause: Any = None, isouter: bool = False, full: bool = False) -> Self:
+        """Add a join to the query."""
+        self._query = self._query.join(target, onclause=onclause, isouter=isouter, full=full)
+        return self
+    
+    def options(self, *args: Any) -> Self:
+        """Add loading options to the query."""
+        self._query = self._query.options(*args)
+        return self
+
     def search(self, search: SearchParams | None, columns: list[Any]) -> Self:
         """Add search across multiple columns using ILIKE."""
 
@@ -137,8 +147,8 @@ class QueryBuilder(Generic[T]):
 
         # Count total matching records (before pagination)
         count_query = select(func.count()).select_from(self._query.subquery())
-        count_result = await self.session.execute(count_query)
-        count = count_result.scalar_one()
+        count_result = await self.session.exec(count_query)
+        count = count_result.one()
 
         # Apply sorting
         if self.sorting:
@@ -167,7 +177,7 @@ class QueryBuilder(Generic[T]):
         )
 
         # Execute
-        data_result = await self.session.execute(self._query)
-        data = list(data_result.scalars().all())
+        data_result = await self.session.exec(self._query)
+        data = list(data_result.unique().all())
 
         return QueryResult[T](data=data, count=count)

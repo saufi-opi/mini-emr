@@ -7,21 +7,27 @@ from pydantic import EmailStr
 from app.modules.user.models import User
 from app.modules.user.schemas import UserCreate, UserUpdate
 from app.modules.user.exceptions import UserAlreadyExistsException
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
 from app.core.schemas import SortDirection
 from app.core.query_builder import QueryBuilder, QueryResult
 from app.core.schemas import PaginationParams, SortParams, SearchParams
+from app.modules.user.models import Role
 
 async def get_user_by_id(*, session: AsyncSession, user_id: uuid.UUID) -> User | None:
     statement = select(User).where(User.id == user_id)
-    result = await session.execute(statement)
-    return result.scalar_one_or_none()
+    result = await session.exec(statement)
+    return result.one_or_none()
 
 async def get_user_by_email(*, session: AsyncSession, email: EmailStr) -> User | None:
     statement = select(User).where(User.email == email)
-    result = await session.execute(statement)
-    return result.scalar_one_or_none()
+    result = await session.exec(statement)
+    return result.one_or_none()
+
+async def get_doctor_by_id(*, session: AsyncSession, doctor_id: uuid.UUID) -> User | None:
+    statement = select(User).where(User.id == doctor_id).where(User.role == Role.DOCTOR)
+    result = await session.exec(statement)
+    return result.one_or_none()
 
 async def get_all_users(*, 
     session: AsyncSession, 

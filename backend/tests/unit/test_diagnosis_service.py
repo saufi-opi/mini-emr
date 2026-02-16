@@ -1,5 +1,5 @@
 import pytest
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.modules.diagnoses import service as diagnosis_service
 from app.modules.diagnoses.models import Diagnosis
 from app.modules.diagnoses.schemas import DiagnosisCreate

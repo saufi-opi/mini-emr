@@ -13,6 +13,7 @@ from app.core.router import router as root_router
 from app.modules.user.router import router as user_router
 from app.modules.auth.router import router as auth_router
 from app.modules.diagnoses.router import router as diagnoses_router
+from app.modules.consultation.router import router as consultation_router
 
 app = FastAPI(title="ClinicCare Mini EMR")
 app.state.limiter = limiter
@@ -42,3 +43,4 @@ app.include_router(root_router)
 app.include_router(auth_router, prefix="/api/v1")
 app.include_router(user_router, prefix="/api/v1")
 app.include_router(diagnoses_router, prefix="/api/v1")
+app.include_router(consultation_router, prefix="/api/v1")

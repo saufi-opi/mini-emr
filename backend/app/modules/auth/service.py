@@ -4,7 +4,7 @@ from typing import Annotated
 
 from fastapi import Request, Response, HTTPException, status
 
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.core.config import settings
 from app.core.security import (
     create_access_token,

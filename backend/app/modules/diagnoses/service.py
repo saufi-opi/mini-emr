@@ -1,7 +1,7 @@
 from typing import List, Sequence, Optional
 from sqlalchemy import or_
 from sqlmodel import select
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlmodel.ext.asyncio.session import AsyncSession
 from app.modules.diagnoses.models import Diagnosis
 from app.modules.diagnoses.schemas import DiagnosisCreate
 from app.modules.diagnoses.exceptions import DiagnosisAlreadyExistsException, DiagnosisNotFoundException
@@ -20,8 +20,8 @@ async def get_diagnoses(*,
 
 async def get_diagnosis_by_code(*, session: AsyncSession, code: str) -> Optional[Diagnosis]:
     statement = select(Diagnosis).where(Diagnosis.code == code)
-    result = await session.execute(statement)
-    return result.scalar_one_or_none()
+    result = await session.exec(statement)
+    return result.one_or_none()
 
 async def create_diagnosis(*, session: AsyncSession, diagnosis: DiagnosisCreate) -> Optional[Diagnosis]:
     db_diagnosis = Diagnosis.model_validate(diagnosis)
