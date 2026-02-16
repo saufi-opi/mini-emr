@@ -1,6 +1,7 @@
 from fastapi import FastAPI, Request, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+from fastapi.routing import APIRoute
 from slowapi import _rate_limit_exceeded_handler
 from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
@@ -15,7 +16,13 @@ from app.modules.auth.router import router as auth_router
 from app.modules.diagnoses.router import router as diagnoses_router
 from app.modules.consultation.router import router as consultation_router
 
-app = FastAPI(title="ClinicCare Mini EMR")
+def custom_generate_unique_id(route: APIRoute) -> str:
+    return f"{route.tags[0]}-{route.name}"
+
+app = FastAPI(
+    title="ClinicCare Mini EMR", 
+    generate_unique_id_function=custom_generate_unique_id
+)
 app.state.limiter = limiter
 
 # Add rate limiter middleware except in tests due to RuntimeError in BaseHTTPMiddleware
