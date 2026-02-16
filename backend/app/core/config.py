@@ -20,6 +20,11 @@ class Settings(BaseSettings):
     APP_ENV: AppEnv = AppEnv.DEVELOPMENT
     PROJECT_NAME: str = "ClinicCare Mini EMR"
 
+    # Admin
+    ADMIN_NAME: str
+    ADMIN_EMAIL: str
+    ADMIN_PASSWORD: str
+
     # PostgreSQL
     POSTGRES_SERVER: str
     POSTGRES_PORT: int = 5432

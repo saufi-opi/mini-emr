@@ -1,0 +1,59 @@
+# Please do not directly edit this file. Instead, modify the .env variables related to NGINX configuration.
+
+upstream backend_api {
+    server backend:8000;
+}
+
+upstream frontend_app {
+    server frontend:80;
+}
+
+server {
+    listen ${NGINX_PORT};
+    ${NGINX_SSL_CONFIG}
+    server_name ${NGINX_SERVER_NAME};
+
+    resolver 127.0.0.11 valid=30s;
+
+    # Security Headers
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-XSS-Protection "1; mode=block" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    add_header Referrer-Policy "no-referrer-when-downgrade" always;
+    add_header Strict-Transport-Security "max-age=31536000; includeSubDomains; preload" always;
+
+    # Backend application (API and Admin)
+    location /api/ {
+        proxy_pass http://backend_api;
+        include /etc/nginx/proxy.conf;
+    }
+
+    # Backend docs (FastAPI)
+    location /docs {
+        proxy_pass http://backend_api/docs;
+        include /etc/nginx/proxy.conf;
+    }
+
+    location /redoc {
+        proxy_pass http://backend_api/redoc;
+        include /etc/nginx/proxy.conf;
+    }
+
+    location /openapi.json {
+        proxy_pass http://backend_api/openapi.json;
+        include /etc/nginx/proxy.conf;
+    }
+
+    # Frontend application
+    location / {
+        proxy_pass http://frontend_app;
+        include /etc/nginx/proxy.conf;
+    }
+
+    # Health check endpoint
+    location /health {
+        access_log off;
+        return 200 "healthy\n";
+        add_header Content-Type text/plain;
+    }
+}

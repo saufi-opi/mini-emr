@@ -1,0 +1,16 @@
+.venv
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache
+.coverage
+htmlcov
+.env
+.python-version
+.vscode
+.git
+.gitignore
+# Exclude scripts from being copied if they are already handled, 
+# but Dockerfile copies them, so we usually don't ignore them if needed.
+# However, .venv is the main culprit.
