@@ -21,25 +21,21 @@ import {
   SidebarRail,
 } from '@/components/ui/sidebar'
 import { useAuthStore } from '@/store/auth'
+import { computed } from 'vue'
 
 const route = useRoute()
 const authStore = useAuthStore()
 
-const menuItems = [
+const adminRoutes = [
   {
     title: 'Dashboard',
     url: '/',
     icon: LayoutDashboard,
   },
   {
-    title: 'Patients',
-    url: '/patients',
+    title: 'Users',
+    url: '/users',
     icon: Users,
-  },
-  {
-    title: 'Appointments',
-    url: '/appointments',
-    icon: Calendar,
   },
   {
     title: 'Consultations',
@@ -47,6 +43,28 @@ const menuItems = [
     icon: ClipboardList,
   },
 ]
+
+const doctorRoutes = [
+  {
+    title: 'Dashboard',
+    url: '/',
+    icon: LayoutDashboard,
+  },
+  {
+    title: 'Consultations',
+    url: '/consultations',
+    icon: ClipboardList,
+  },
+]
+
+const menuItems = computed(() => {
+  if (authStore.user?.role === 'admin') {
+    return adminRoutes
+  } else if (authStore.user?.role === 'doctor') {
+    return doctorRoutes
+  }
+  return []
+})
 
 </script>
 

@@ -13,7 +13,7 @@ from app.modules.user.dependencies import get_current_user
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/login", response_model=TokenResponse)
-@limiter.limit("5/hour")
+@limiter.limit("1000/hour")
 async def login(
     request: Request,
     response: Response,

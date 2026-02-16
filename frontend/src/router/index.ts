@@ -31,6 +31,9 @@ router.beforeEach(async (to, _from, next) => {
   } else if (to.path === '/login' && authStore.isAuthenticated) {
     console.log('Already authenticated, redirecting from /login to /');
     next('/')
+  } else if (authRequired && to.meta.role && authStore.user?.role !== to.meta.role) {
+    console.log(`Unauthorized: Required role ${to.meta.role}, but user has ${authStore.user?.role}`);
+    next('/not-found')
   } else {
     next()
   }

@@ -36,7 +36,7 @@ async def get_all_users(*,
     search: SearchParams
 ) -> QueryResult[User]:
     query = QueryBuilder(User, session)
-    query.paginate(pagination).sort(sort).search(search, [User.full_name])
+    query.paginate(pagination).sort(sort).search(search, [User.full_name, User.email])
     return await query.execute()
 
 async def create_user(*, session: AsyncSession, user_create: UserCreate) -> User:
