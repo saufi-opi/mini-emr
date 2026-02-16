@@ -63,7 +63,6 @@ import { useForm } from 'vee-validate'
 import { toTypedSchema } from '@vee-validate/zod'
 import * as z from 'zod'
 
-import { AuthService } from '@/client'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -84,6 +83,7 @@ import {
 import ThemeToggle from '@/components/global/ThemeToggle.vue'
 import { toast } from 'vue-sonner'
 import { getErrorMessage } from '@/lib/error'
+import { useAuthStore } from '@/store/auth'
 
 defineOptions({
   name: 'LoginPage',
@@ -102,17 +102,21 @@ const form = useForm({
   validationSchema: formSchema,
 })
 
+const authStore = useAuthStore()
+
 const onSubmit = form.handleSubmit(async (values) => {
   loading.value = true
   try {
-    await AuthService.login({
-      requestBody: {
-        email: values.email,
-        password: values.password,
-      },
+    const success = await authStore.login({
+      email: values.email,
+      password: values.password
     })
-    toast.success('Login successful!')
-    router.push('/dashboard')
+    if (success) {
+      toast.success('Login successful!')
+      router.push('/')
+    } else {
+      toast.error('Login failed. Please check your credentials.')
+    }
   } catch (error) {
     toast.error(getErrorMessage(error, 'Login failed. Please check your credentials.'))
   } finally {

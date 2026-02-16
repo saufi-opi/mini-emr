@@ -3,7 +3,7 @@
 import type { CancelablePromise } from './core/CancelablePromise';
 import { OpenAPI } from './core/OpenAPI';
 import { request as __request } from './core/request';
-import type { AuthLoginData, AuthLoginResponse, AuthRefreshResponse, AuthLogoutResponse, ConsultationCreateConsultationData, ConsultationCreateConsultationResponse, ConsultationListConsultationsData, ConsultationListConsultationsResponse, ConsultationGetConsultationData, ConsultationGetConsultationResponse, DiagnosisSearchDiagnosesData, DiagnosisSearchDiagnosesResponse, RootRootResponse, RootHealthCheckResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse } from './types.gen';
+import type { AuthLoginData, AuthLoginResponse, AuthRefreshResponse, AuthLogoutResponse, ConsultationCreateConsultationData, ConsultationCreateConsultationResponse, ConsultationListConsultationsData, ConsultationListConsultationsResponse, ConsultationGetConsultationData, ConsultationGetConsultationResponse, DiagnosisSearchDiagnosesData, DiagnosisSearchDiagnosesResponse, RootRootResponse, RootHealthCheckResponse, UsersReadUserMeResponse, UsersReadUsersData, UsersReadUsersResponse, UsersCreateUserData, UsersCreateUserResponse } from './types.gen';
 
 export class AuthService {
     /**
@@ -180,6 +180,19 @@ export class RootService {
 }
 
 export class UsersService {
+    /**
+     * Read User Me
+     * Get current user.
+     * @returns UserRead Successful Response
+     * @throws ApiError
+     */
+    public static readUserMe(): CancelablePromise<UsersReadUserMeResponse> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/v1/users/me'
+        });
+    }
+    
     /**
      * Read Users
      * Retrieve users.

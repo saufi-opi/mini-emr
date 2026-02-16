@@ -1,12 +1,12 @@
 from fastapi.requests import Request
 import uuid
-from typing import Any, Sequence
+from typing import Any, Sequence, Annotated
 
 from fastapi import APIRouter, Depends, HTTPException, Query
 from app.modules.user.models import User
 from app.modules.user.schemas import UserRead, UserCreate
 from app.modules.user import service as user_service
-from app.modules.user.dependencies import get_current_admin_user
+from app.modules.user.dependencies import get_current_admin_user, get_current_active_user
 from app.core.database import AsyncSessionDep
 from app.core.rate_limiter import limiter
 from app.core.schemas import PaginationParams, SortParams, SearchParams
@@ -16,6 +16,18 @@ router = APIRouter(
     prefix="/users",
     tags=["users"],
 )
+
+
+@router.get("/me", response_model=UserRead)
+@limiter.limit("60/minute")
+async def read_user_me(
+    request: Request,
+    current_user: Annotated[User, Depends(get_current_active_user)],
+) -> User:
+    """
+    Get current user.
+    """
+    return current_user
 
 
 @router.get(

@@ -17,6 +17,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.564.0",
+    "pinia": "^3.0.4",
     "reka-ui": "^2.8.0",
     "tailwind-merge": "^3.4.1",
     "tailwindcss": "^4.1.18",
@@ -27,7 +28,7 @@
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "@hey-api/openapi-ts": "^0.92.4",
+    "@hey-api/openapi-ts": "0.73.0",
     "@iconify-json/radix-icons": "^1.2.6",
     "@iconify/vue": "^5.0.0",
     "@types/node": "^24.10.13",

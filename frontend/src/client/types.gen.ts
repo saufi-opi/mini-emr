@@ -149,6 +149,8 @@ export type RootRootResponse = (unknown);
 
 export type RootHealthCheckResponse = (unknown);
 
+export type UsersReadUserMeResponse = (UserRead);
+
 export type UsersReadUsersData = {
     /**
      * Maximum records to return

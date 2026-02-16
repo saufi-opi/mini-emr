@@ -1,18 +1,16 @@
 import axios from "axios"
-import { AuthService, OpenAPI } from "../client"
-
-let accessToken: string | null = null
-
-export const setAccessToken = (token: string | null) => {
-  accessToken = token
-}
-
-export const getAccessToken = () => accessToken
+import { OpenAPI } from "../client"
+import { useAuthStore } from "../store/auth"
 
 OpenAPI.BASE = import.meta.env.VITE_API_URL || ""
 OpenAPI.WITH_CREDENTIALS = true
 OpenAPI.TOKEN = async () => {
-  return accessToken || ""
+  try {
+    const authStore = useAuthStore()
+    return authStore.accessToken || ""
+  } catch (e) {
+    return ""
+  }
 }
 
 let isRefreshing = false
@@ -37,9 +35,9 @@ axios.interceptors.response.use(
     if (
       error.response?.status === 401 &&
       !originalRequest._retry &&
-      !originalRequest.url?.includes("/login/access-token") &&
-      !originalRequest.url?.includes("/refresh") &&
-      localStorage.getItem("was_logged_in")
+      !originalRequest.url?.includes("/auth/login") &&
+      !originalRequest.url?.includes("/auth/refresh") &&
+      localStorage.getItem("was_logged_in") === 'true'
     ) {
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
@@ -58,16 +56,20 @@ axios.interceptors.response.use(
       isRefreshing = true
 
       try {
-        const response = await AuthService.refresh()
-        const newToken = response.access_token
-        setAccessToken(newToken)
-        processQueue(null, newToken)
-        originalRequest.headers.Authorization = `Bearer ${newToken}`
-        return axios(originalRequest)
+        const authStore = useAuthStore()
+        const success = await authStore.refresh()
+        if (success) {
+          const newToken = authStore.accessToken
+          processQueue(null, newToken)
+          originalRequest.headers.Authorization = `Bearer ${newToken}`
+          return axios(originalRequest)
+        } else {
+          throw new Error("Refresh failed")
+        }
       } catch (refreshError) {
+        const authStore = useAuthStore()
         processQueue(refreshError, null)
-        setAccessToken(null)
-        localStorage.removeItem("was_logged_in")
+        authStore.logout()
         window.location.href = "/login"
         return Promise.reject(refreshError)
       } finally {
