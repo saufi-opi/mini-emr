@@ -107,7 +107,7 @@ const authStore = useAuthStore()
 const onSubmit = form.handleSubmit(async (values) => {
   loading.value = true
   try {
-    const success = await authStore.login({
+    const { success, error } = await authStore.login({
       email: values.email,
       password: values.password
     })
@@ -115,7 +115,7 @@ const onSubmit = form.handleSubmit(async (values) => {
       toast.success('Login successful!')
       router.push('/')
     } else {
-      toast.error('Login failed. Please check your credentials.')
+      toast.error(error || 'Login failed. Please check your credentials.')
     }
   } catch (error) {
     toast.error(getErrorMessage(error, 'Login failed. Please check your credentials.'))

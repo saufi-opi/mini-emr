@@ -4,5 +4,5 @@ A minimal, secure, and intuitive EMR tool for clinics to search ICD-10 codes, re
 
 ## Tech Stack
 - **Backend**: FastAPI, SQLModel, PostgreSQL, Redis, uv
-- **Frontend**: Vue 3, Vite, PrimeVue
+- **Frontend**: Vue 3, Vite, Shadcn
 - **DevOps**: Docker Compose

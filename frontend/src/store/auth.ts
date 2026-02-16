@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { AuthService, UsersService, type LoginRequest, type UserRead } from '@/client'
 import { useRouter } from 'vue-router'
+import { getErrorMessage } from '@/lib/error'
 
 export const useAuthStore = defineStore('auth', () => {
   const router = useRouter()
@@ -32,7 +33,7 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function login(credentials: LoginRequest): Promise<boolean> {
+  async function login(credentials: LoginRequest): Promise<{success: boolean, error?: string}> {
     try {
       const response = await AuthService.login({
         requestBody: credentials
@@ -41,12 +42,12 @@ export const useAuthStore = defineStore('auth', () => {
       if (response) {
         setAccessToken(response.access_token);
         await fetchUser();
-        return true;
+        return {success: true};
       }
-      return false;
+      return {success: false};
     } catch (error) {
       console.error('Login error:', error);
-      return false;
+      return {success: false, error: getErrorMessage(error)};
     }
   }
 
