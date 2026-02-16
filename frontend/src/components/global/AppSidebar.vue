@@ -2,9 +2,9 @@
 import {
   LayoutDashboard,
   Users,
-  Calendar,
   ClipboardList,
   LogOut,
+  Stethoscope,
 } from 'lucide-vue-next'
 import { useRoute } from 'vue-router'
 import {
@@ -38,6 +38,11 @@ const adminRoutes = [
     icon: Users,
   },
   {
+    title: 'Diagnoses',
+    url: '/diagnoses',
+    icon: Stethoscope,
+  },
+  {
     title: 'Consultations',
     url: '/consultations',
     icon: ClipboardList,
@@ -49,6 +54,11 @@ const doctorRoutes = [
     title: 'Dashboard',
     url: '/',
     icon: LayoutDashboard,
+  },
+  {
+    title: 'Diagnoses',
+    url: '/diagnoses',
+    icon: Stethoscope,
   },
   {
     title: 'Consultations',
